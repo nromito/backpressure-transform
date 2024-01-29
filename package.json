@@ -1,0 +1,20 @@
+{
+  "name": "backpressure-transform",
+  "version": "1.0.0",
+  "description": "Utility for handling backpressure in transforms automatically ",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Romito <nrromito@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.10",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}
