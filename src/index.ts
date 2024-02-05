@@ -16,10 +16,10 @@ export class BackpressuredTransform extends Transform {
   }
   private flushBuf(callback: TransformCallback): void {
     const buf = this.buf;
+    this.buf = [];
     for (let i = 0; i < buf.length; i++) {
       if (this.push(buf[i])) continue;
       if (i === buf.length - 1) {
-        this.buf.length = 0;
         return callback();
       }
       this.buf = this.buf.slice(i+1);
@@ -28,7 +28,6 @@ export class BackpressuredTransform extends Transform {
       })
       return;
     }
-    this.buf.length = 0;
     callback();
   }
 }
