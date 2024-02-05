@@ -26,7 +26,6 @@ describe('BackpressuredTransform', async () => {
         transform: (chunk, encoding) => [chunk, chunk],
         flush: () => ['end']
       }).on('data', chunk => {
-        console.log('chunk', {chunk})
           data.push(chunk)
         })
     ));
