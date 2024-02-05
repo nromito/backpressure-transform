@@ -1,17 +1,20 @@
 import { Transform, TransformCallback, TransformOptions } from "stream";
 
-export interface ITransformOpts extends Exclude<TransformOptions, 'transform'> {
+export interface ITransformOpts extends Exclude<TransformOptions, 'transform' | 'flush'> {
   transform?: (chunk: any, encoding: BufferEncoding) => any[];
+  flush?: () => any[];
 }
 export class BackpressuredTransform extends Transform {
   private transformImpl: (chunk: any, encoding: BufferEncoding) => any[];
+  private flushImpl: () => any[]
   private buf: any[] = [];
   constructor(opts?: ITransformOpts) {
-    super(opts);
+    super({...opts, transform: undefined, flush: undefined});
     this.transformImpl = opts?.transform ?? ((chunk, enc) => [chunk])
+    this.flushImpl = opts?.flush ?? (() => []);
   }
   _transform(chunk: any, encoding: BufferEncoding, callback: TransformCallback): void {
-    this.buf.push(this.transformImpl(chunk, encoding));
+    this.buf.push.apply(this.buf, this.transformImpl(chunk, encoding));
     this.flushBuf(callback);
   }
   private flushBuf(callback: TransformCallback): void {
@@ -29,5 +32,9 @@ export class BackpressuredTransform extends Transform {
       return;
     }
     callback();
+  }
+  _flush(callback: TransformCallback): void {
+    this.buf.push.apply(this.buf, this.flushImpl())
+    this.flushBuf(callback);
   }
 }
