@@ -5,16 +5,20 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "tsx --test src/*.test.ts"
   },
   "author": "Nick Romito <nrromito@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.10",
+    "mocha": "^10.2.0",
     "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }
