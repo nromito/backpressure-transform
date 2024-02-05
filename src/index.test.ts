@@ -1,4 +1,4 @@
-import { Readable } from "node:stream";
+import { Readable, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { describe, it } from "node:test";
 import { BackpressuredTransform } from ".";
@@ -30,5 +30,34 @@ describe('BackpressuredTransform', async () => {
         })
     ));
     assert.deepEqual(data.flat(), [0,0,1,1,2,2,3,3,4,4,5,5, 'end'])
+  })
+  it('should actually backpressure', async () => {
+    const data: any[] = [];
+    let resolve: any;
+    const p = new Promise(r => {
+      resolve = r;
+    }) 
+    const w = new Writable({
+      objectMode: true,
+      highWaterMark: 1,
+      write(chunk, encoding, callback) {
+        data.push(chunk);
+        resolve();
+      },
+    })
+    const t = new BackpressuredTransform({
+      objectMode: true, 
+      highWaterMark: 1,
+      transform: (chunk, encoding) => [chunk, chunk],
+      flush: () => ['end']
+    });
+    pipeline(
+      Readable.from([0,1,2,3,4,5]),
+      t,
+      w
+    );
+    await p;
+    assert.deepEqual(data.flat(), [0])
+    assert.deepEqual(t.readableLength, 1)
   })
 })
