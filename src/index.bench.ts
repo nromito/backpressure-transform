@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { PassThrough, Readable } from "node:stream";
+import { PassThrough, Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { before, describe, it } from "node:test";
 import { BackpressuredTransform } from ".";
@@ -106,7 +106,40 @@ describe('system perf', () => {
     );
     const passthruElapsed = Date.now() - passthruStart;
     console.log('results', {backpressuredElapsed, passthruElapsed})
-    // backpressured is mobetta!
-    assert(passthruElapsed - backpressuredElapsed >= 0)
+    const marginOfError = Math.max(passthruElapsed, backpressuredElapsed)*0.05;
+    assert(Math.abs(passthruElapsed - backpressuredElapsed) < marginOfError)
+  })
+
+  it('should test object mode', async () => {
+    const backpressuredStart = Date.now();
+    await pipeline(
+      createReadStream(join(process.cwd(), 'data', 'syslog.log.gz')),
+      createGunzip(),
+      new Transform({
+        objectMode: true,
+        transform(chunk, encoding, callback) {
+          callback(null, {raw: chunk});
+        }
+      }),
+      new BackpressuredTransform({objectMode: true}).on('data', () => {})
+    );
+    const backpressuredElapsed = Date.now() - backpressuredStart;
+
+    const passthruStart = Date.now();
+    await pipeline(
+      createReadStream(join(process.cwd(), 'data', 'syslog.log.gz')),
+      createGunzip(),
+      new Transform({
+        objectMode: true,
+        transform(chunk, encoding, callback) {
+          callback(null, {raw: chunk});
+        }
+      }),
+      new PassThrough({objectMode: true}).on('data', () => {})
+    );
+    const passthruElapsed = Date.now() - passthruStart;
+    console.log('results', {backpressuredElapsed, passthruElapsed})
+    const marginOfError = Math.max(passthruElapsed, backpressuredElapsed)*0.05;
+    assert(Math.abs(passthruElapsed - backpressuredElapsed) < marginOfError)
   })
 })
