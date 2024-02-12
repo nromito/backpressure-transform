@@ -21,6 +21,12 @@
       "name": "Run npm start",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "command": "npm run bench",
+      "name": "Run bench",
+      "request": "launch",
+      "type": "node-terminal"
     }
   ]
 }

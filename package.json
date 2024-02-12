@@ -10,12 +10,14 @@
   ],
   "scripts": {
     "build": "tsc",
-    "test": "tsx --test src/*.test.ts"
+    "test": "tsx --test src/*.test.ts",
+    "bench": "tsx --test src/*.bench.ts"
   },
   "author": "Nick Romito <nrromito@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.10",
+    "benchmark": "^2.1.4",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
