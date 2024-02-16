@@ -1,15 +1,15 @@
 import { Readable, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { describe, it } from "node:test";
-import { BackpressuredTransform } from ".";
+import { BackpressureTransform } from ".";
 import * as assert from 'assert'
 
-describe('BackpressuredTransform - object mode', async () => {
+describe('BackpressureTransform - object mode', async () => {
   it('should passthru', async () => {
     const data: any[] = [];
     await assert.doesNotReject(pipeline(
       Readable.from([0,1,2,3,4,5]),
-      new BackpressuredTransform({objectMode: true, highWaterMark: 1})
+      new BackpressureTransform({objectMode: true, highWaterMark: 1})
         .on('data', chunk => {
           data.push(chunk)
         })
@@ -20,7 +20,7 @@ describe('BackpressuredTransform - object mode', async () => {
     const data: any[] = [];
     await assert.doesNotReject(pipeline(
       Readable.from([0,1,2,3,4,5]),
-      new BackpressuredTransform({
+      new BackpressureTransform({
         objectMode: true, 
         highWaterMark: 1,
         transform: (chunk, encoding) => [chunk, chunk],
@@ -45,7 +45,7 @@ describe('BackpressuredTransform - object mode', async () => {
         resolve();
       },
     })
-    const t = new BackpressuredTransform({
+    const t = new BackpressureTransform({
       objectMode: true, 
       highWaterMark: 1,
       transform: (chunk, encoding) => [chunk, chunk],
@@ -62,12 +62,12 @@ describe('BackpressuredTransform - object mode', async () => {
   })
 })
 
-describe('BackpressuredTransform - buffer mode', async () => {
+describe('BackpressureTransform - buffer mode', async () => {
   it('should passthru', async () => {
     const data: any[] = [];
     await assert.doesNotReject(pipeline(
       Readable.from('foobar'),
-      new BackpressuredTransform({highWaterMark: 1})
+      new BackpressureTransform({highWaterMark: 1})
         .on('data', chunk => {
           data.push(chunk)
         })
@@ -78,7 +78,7 @@ describe('BackpressuredTransform - buffer mode', async () => {
     const data: any[] = [];
     await assert.doesNotReject(pipeline(
       Readable.from('foobar'),
-      new BackpressuredTransform({
+      new BackpressureTransform({
         highWaterMark: 1,
         transform: (chunk, encoding) => chunk + chunk,
         flush: () => 'end'
@@ -101,7 +101,7 @@ describe('BackpressuredTransform - buffer mode', async () => {
         resolve();
       },
     })
-    const t = new BackpressuredTransform({
+    const t = new BackpressureTransform({
       highWaterMark: 1,
       transform: (chunk, encoding) => chunk + chunk,
       flush: () => 'end'

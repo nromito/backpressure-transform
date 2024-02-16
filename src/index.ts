@@ -4,7 +4,7 @@ export interface ITransformOpts extends Exclude<TransformOptions, 'transform' | 
   transform?: (chunk: Buffer | string | any, encoding: BufferEncoding) => Buffer | string | any;
   flush?: () => Buffer | string | any;
 }
-export class BackpressuredTransform extends Transform {
+export class BackpressureTransform extends Transform {
   private transformImpl: (chunk: Buffer | string | any, encoding: BufferEncoding) => Buffer | string | any;
   private flushImpl?: () => Buffer | string | any;
   private flushBuf: (buf: any, callback: TransformCallback) => void;

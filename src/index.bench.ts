@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import { PassThrough, Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { before, describe, it } from "node:test";
-import { BackpressuredTransform } from ".";
+import { BackpressureTransform } from ".";
 import { createReadStream } from "node:fs";
 import { join } from "node:path";
 import assert from "node:assert";
@@ -29,7 +29,7 @@ describe.skip('micro', () => {
       .add('backpressure passthru', async () => {
         await pipeline(
           Readable.from(readableStr),
-          new BackpressuredTransform().on('data', () => {}) // throw it out
+          new BackpressureTransform().on('data', () => {}) // throw it out
         )
       })
       .on('cycle', (event: any) => {
@@ -64,7 +64,7 @@ describe.skip('micro', () => {
         await p;
       })
       .add('backpressure passthru', async () => {
-        const t = new BackpressuredTransform({objectMode: true}).on('data', () => {})
+        const t = new BackpressureTransform({objectMode: true}).on('data', () => {})
         const p = new Promise<void>(resolve => {
           t.once('finish', () => resolve())
         })
@@ -94,7 +94,7 @@ describe('system perf', () => {
     await pipeline(
       createReadStream(join(process.cwd(), 'data', 'syslog.log.gz')),
       createGunzip(),
-      new BackpressuredTransform().on('data', () => {})
+      new BackpressureTransform().on('data', () => {})
     );
     const backpressuredElapsed = Date.now() - backpressuredStart;
 
@@ -121,7 +121,7 @@ describe('system perf', () => {
           callback(null, {raw: chunk});
         }
       }),
-      new BackpressuredTransform({objectMode: true}).on('data', () => {})
+      new BackpressureTransform({objectMode: true}).on('data', () => {})
     );
     const backpressuredElapsed = Date.now() - backpressuredStart;
 
