@@ -11,6 +11,14 @@
     "test": "tsx --test src/*.test.ts",
     "bench": "tsx --test src/*.bench.ts"
   },
+  "homepage": "https://github.com/nromito/backpressure-transform",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nromito/backpressure-transform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nromito/backpressure-transform/issues"
+  },
   "author": "Nick Romito <nrromito@gmail.com>",
   "license": "MIT",
   "devDependencies": {
