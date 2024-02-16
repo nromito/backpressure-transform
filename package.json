@@ -1,6 +1,6 @@
 {
   "name": "backpressure-transform",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Utility for handling backpressure in transforms automatically ",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
